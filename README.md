@@ -26,4 +26,25 @@ Adding a new optimisation alogorithm:
 Add the code for new algorithm in "update_params(self)" function inside NeuralNetwork.py file
 
 #Question 4:
+sweep.py file for sweep functionality provided by wandb to find the best values for the hyperparameters
+
+#Question 5:
+Plot is provided in the report
+
+#Question 6:  
+"Parallel co-ordinates plot" , "correlation summary" and the observations provided in the report
+
+#Question 7:
+confusion_matrix.py file provided to plot the confusion matrix.
+Code for finding the best model in a sweep using validation accuracy and test accuracy is provided in this python file.
+
+#Question 8:
+In sweep.py file :
+model = FeedForwardNN(input_size, hidden_layers, output_size,activation=config.activation_func,weight_init=config.weight_init,loss_func='cross_entropy', learn_rate=config.learning_rate, grad_desc=config.optimizer)
+
+Change loss_func='MSE' to find the mean square error instead of 'cross_entropy' .
+
+#Question 10:
+mnist.py file provided to run the code for MNIST dataset.
+
 
