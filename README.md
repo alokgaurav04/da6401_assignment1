@@ -13,7 +13,7 @@ Run the Q_No_1.py file to get images in wandb.
 #Question 2 :
 
 Run the Q_No_2.py file to output the probability distribution for all classes of some samples in Fashion_Mnist data.
-Comment the Line No-163 ( wandb.log() ) in NeuralNetwork.py while running this code 
+Comment the Line No-162 ( wandb.log() ) in NeuralNetwork.py while running this code 
 
 #Question 3:
 
@@ -40,6 +40,10 @@ Plot is provided in the report
 #Question 7:
 confusion_matrix.py file provided to plot the confusion matrix.
 Code for finding the best model in a sweep using validation accuracy and test accuracy is provided in this python file.
+
+In confusion_matrix.py file ,
+
+sweep = api.sweep(f"DA6401_Assignment_1/kvo0qk0z")  ## We need to provide the sweep id here , eg-'kvo0qk0z' 
 
 #Question 8:
 In sweep.py file :
