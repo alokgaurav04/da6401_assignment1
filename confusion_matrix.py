@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from Loss_Function import *
 import wandb
 
+run =wandb.init(project="DA6401_Assignment_1")
 # Fetch the best model from the sweep
 api = wandb.Api()
 sweep = api.sweep(f"DA6401_Assignment_1/kvo0qk0z")
@@ -14,9 +15,7 @@ best_run = sorted(sweep.runs, key=lambda run: run.summary.get("val_accuracy", 0)
 best_config = best_run.config
 print(f"Best model found: {best_config}")
 
-# Example Usage
 input_size = 28 * 28  # Flattened image size
-#hidden_layers = [128, 128]  # Number of neurons in each hidden layer
 output_size = 10  # Number of classes
 hidden_layers=[]
 no_of_hidden_layer=best_config['hidden_layers']
@@ -54,14 +53,13 @@ class_names = [
     'T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat', 
     'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot'
 ]
-# Example confusion matrix (replace with your own confusion matrix calculation)
+#confusion matrix
 num_classes = 10
 confusion_matrix = np.zeros((num_classes, num_classes), dtype=int)
 
-# Assuming y_test and y_pred are already computed
 for true_label, pred_label in zip(y_test_one_hot, y_pred):
     true_label = np.argmax(true_label)  # Convert true one-hot label to integer
-    pred_label = np.argmax(pred_label)  # Ensure predicted label is an integer
+    pred_label = np.argmax(pred_label)  # To ensure predicted label is an integer
     
     # Update confusion matrix
     confusion_matrix[true_label, pred_label] += 1
@@ -91,3 +89,4 @@ ax.set_yticklabels(class_names)
 
 # Display the plot
 plt.show()
+wandb.log({"Confusion Matrix": wandb.Image(plt)})
