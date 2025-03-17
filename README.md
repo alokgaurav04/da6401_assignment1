@@ -11,6 +11,7 @@ Run the Question_1.py file to get images in wandb.
 #Question 2 :
 
 Run the Q_No_2.py file to output the probability distribution for all classes of some samples in Fashion_Mnist data.
+Comment the Line No-163 ( wandb.log() ) in NeuralNetwork.py while running this code 
 
 #Question 3:
 
