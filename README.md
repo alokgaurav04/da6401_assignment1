@@ -18,10 +18,10 @@ Comment the Line No-163 ( wandb.log() ) in NeuralNetwork.py while running this c
 The backpropagation algorithm is implemented in NeuralNetwork.py file.
 
 Defining the Neural Network for classification:
-nn = FFN(input_dim = 784, num_classes = 10, optimizer=config.optimizer, weight_decay=config.weight_decay, loss_fn= config.loss_fn)
+model = FeedForwardNN(input_size, hidden_layers, output_size,activation=config.activation_func,weight_init=config.weight_init,loss_func='cross_entropy', learn_rate=config.learning_rate, grad_desc=config.optimizer)
 
 Training the network :
-nn.train(x_train, y_train,batch_size,epochs=10,val_split=0.1)  #Batch Size can be changed from this function
+model.train(x_train, y_train,batch_size,epochs=10,val_split=0.1)  #Batch Size can be changed from this function
 
 Adding a new optimisation alogorithm:
 Add the code for new algorithm in "update_params(self)" function inside NeuralNetwork.py file
