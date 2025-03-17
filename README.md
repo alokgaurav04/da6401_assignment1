@@ -21,7 +21,7 @@ Defining the Neural Network for classification:
 model = FeedForwardNN(input_size, hidden_layers, output_size,activation=config.activation_func,weight_init=config.weight_init,loss_func='cross_entropy', learn_rate=config.learning_rate, grad_desc=config.optimizer)
 
 Training the network :
-model.train(x_train, y_train,batch_size,epochs=10,val_split=0.1)  #Batch Size can be changed from this function
+model.train(X_train, y_train_one_hot, batch_size=config.batch_size, epochs=config.epochs,val_split=0.1)  #Batch Size can be changed from this function
 
 Adding a new optimisation alogorithm:
 Add the code for new algorithm in "update_params(self)" function inside NeuralNetwork.py file
