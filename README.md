@@ -51,3 +51,11 @@ Change loss_func='MSE' to find the mean square error instead of 'cross_entropy' 
 mnist.py file provided to run the code for MNIST dataset.
 
 
+FOR CODE SPECIFICATION :
+
+I have used these sweep details  : 
+
+python .\train.py --wandb_sweepid='kvo0qk0z' --wandb_project='DA6401_Assignment_1' --wandb_entity='alokgaurav04-indian-institute-of-technology-madras'
+
+
+
