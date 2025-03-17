@@ -1,6 +1,7 @@
 # DA6402 Assignment1 :
 
 [WANDB_Report](https://wandb.ai/alokgaurav04-indian-institute-of-technology-madras/DA6401_Assignment_1/reports/DA6401-Assignment-1--VmlldzoxMTcxMTAwMg)
+
 [Github Link](https://github.com/alokgaurav04/da6401_assignment1)
 
 Implementation of a Feed Forward Neural Network with various Optimization algorithms
