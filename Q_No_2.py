@@ -2,9 +2,7 @@ from NeuralNetwork import FeedForwardNN,fashion_mnist,np
 import matplotlib.pyplot as plt
 from Loss_Function import *
 
-# Example Usage
 input_size = 28 * 28  # Flattened image size
-#hidden_layers = [128, 128]  # Number of neurons in each hidden layer
 output_size = 10  # Number of classes
 hidden_layers=[]
 no_of_hidden_layer=2
