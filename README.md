@@ -20,6 +20,7 @@ Comment the Line No-162 ( wandb.log() ) in NeuralNetwork.py while running this c
 The backpropagation algorithm is implemented in NeuralNetwork.py file.
 
 Defining the Neural Network for classification:
+
 model = FeedForwardNN(input_size, hidden_layers, output_size,activation=config.activation_func,weight_init=config.weight_init,loss_func='cross_entropy', learn_rate=config.learning_rate, grad_desc=config.optimizer)
 
 Training the network :
