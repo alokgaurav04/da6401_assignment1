@@ -54,6 +54,8 @@ Change loss_func='MSE' to find the mean square error instead of 'cross_entropy' 
 #Question 10:
 mnist.py file provided to run the code for MNIST dataset.
 
+Comment the Line No-162 ( wandb.log() ) in NeuralNetwork.py while running this code
+
 
 FOR CODE SPECIFICATION :
 
