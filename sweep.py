@@ -5,10 +5,12 @@ from Loss_Function import *
 import wandb
 import os
 
-os.environ['WANDB_TIMEOUT'] = '120'  # Set timeout to 60 seconds
+os.environ['WANDB_TIMEOUT'] = '120'  # Set timeout to 120 seconds
 
 def train_wandb(config = None):
 
+    run = wandb.init(config=config, resume=True)
+    config = wandb.config
     input_size = 28 * 28  # Flattened image size
     hidden_layers=[]
     no_of_hidden_layer=config.hidden_layers
@@ -31,20 +33,16 @@ def train_wandb(config = None):
     y_test_one_hot = np.zeros((y_test.shape[0], 10))
     y_test_one_hot[np.arange(y_test.shape[0]), y_test] = 1
 
-    run = wandb.init(config=config, resume=True)
-    config = wandb.config
-
-    name = f'bs_{config.batch_size}_acf_{config.activation_func}_lr_{config.learning_rate}_opt_{config.optimizer}_w_init_{config.weight_init}'
+    name = f'hl_{config.hidden_layers}_bs_{config.batch_size}_acf_{config.activation_func}_lr_{config.learning_rate}_opt_{config.optimizer}_w_init_{config.weight_init}'
     wandb.run.name = name
     # wandb.run.save()
 
-    model = FeedForwardNN(input_size, hidden_layers, output_size, learn_rate=config.learning_rate, grad_desc=config.optimizer)
+    model = FeedForwardNN(input_size, hidden_layers, output_size,activation=config.activation_func,weight_init=config.weight_init,loss_func='cross_entropy', learn_rate=config.learning_rate, grad_desc=config.optimizer)
 
     model.train(X_train, y_train_one_hot, batch_size=config.batch_size, epochs=config.epochs,val_split=0.1)
 
 project_name = 'DA6401_Assignment_1' #Add project name here
-entity = '' #Add username here
-# wandb.init(project=project_name)
+entity = ''
 
 sweep_config = {
     'method': 'bayes', 
@@ -66,7 +64,7 @@ sweep_config = {
             'values': [0.001,0.0001]
         },
         'optimizer': {
-            'values': ["sgd","momentum","nesterov", "rmsprop", "adam","nadam"]
+            'values': ["sgd","momentum","nesterov", "rmsprop", "adam",]
         },
         'batch_size': {
             'values': [16,32,64,128]
@@ -83,7 +81,6 @@ sweep_config = {
     }
 }
 
-#To add a new agent to an existing sweep, comment next line and directly put sweep_id in wandb.agent
 sweep_id = wandb.sweep(sweep_config, project=project_name)
 
-wandb.agent(sweep_id, project=project_name, function=train_wandb,count=1)
+wandb.agent(sweep_id, project=project_name, function=train_wandb)
