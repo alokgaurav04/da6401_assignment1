@@ -3,8 +3,6 @@ import numpy as np
 import wandb
 from NeuralNetwork import FeedForwardNN
 
-#wandb.login(key = 'WANDB_API_KEY', verify = True)
-
 run = wandb.init(project="DA6401_Assignment_1",name='code_specifications')
 
 parser = argparse.ArgumentParser(description='Neural Network Code Specifications')
@@ -43,9 +41,6 @@ elif args.dataset == 'fashion_mnist':
 input_size = 28 * 28  # Flattened image size
 output_size = 10  # Number of classes
 
-# Load the Fashion MNIST dataset
-#(X_train, y_train), (X_test, y_test) = train_data
-
 # Preprocess the data
 X_train = X_train.reshape(-1, 28*28) / 255.0  # Flatten the images and normalize
 X_test = X_test.reshape(-1, 28*28) / 255.0
@@ -58,13 +53,12 @@ y_test_one_hot = np.zeros((y_test.shape[0], 10))
 y_test_one_hot[np.arange(y_test.shape[0]), y_test] = 1
 
 if not args.wandb_sweepid is None:
-    # For sweep runs, where config is set by wandb.ai
+    # For sweep where config is set by wandb
     def train(config=None):
     # Initialize a new wandb run
         with wandb.init(config=config) as run:
 
-            # If called by wandb.agent, as below,
-            # this config will be set by Sweep Controller
+            # If called by wandb.agent , this config will be set by Sweep Controller
             config = wandb.config
             
             run_name = str(config).replace("': '", ' ').replace("'", '')
