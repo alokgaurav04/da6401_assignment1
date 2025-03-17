@@ -6,7 +6,7 @@ Implementation of a Feed Forward Neural Network with various Optimization algori
 
 #Question 1:
 
-Run the Question_1.py file to get images in wandb.
+Run the Q_No_1.py file to get images in wandb.
 
 #Question 2 :
 
