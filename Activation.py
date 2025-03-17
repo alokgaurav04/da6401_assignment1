@@ -1,5 +1,4 @@
 import numpy as np
-#Activation functions
 
 def sigmoid(x):
     #Clip for Math overflow
@@ -16,7 +15,7 @@ def softmax(x):
     exp=np.exp(x-np.max(x,axis=1,keepdims=True))
     return exp/np.sum(exp,axis=1,keepdims=True)
 
-#Calculate derivative of Activation functions to be used in the Backpropogation stage.
+# Derivative of Activation functions used in backpropogation.
 def relu_derivative(x):
     return (x>0).astype(float)
 
