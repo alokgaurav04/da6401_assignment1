@@ -1,16 +1,17 @@
 import numpy as np
 import pandas as pd
-from keras.datasets import fashion_mnist
+from keras.datasets import fashion_mnist,mnist
 from weight_initialization import *
 from Loss_Function import *
 from Activation import *
 import wandb
 
 class FeedForwardNN:
-    def __init__(self,input_size,hidden_layers,output_size=10,activation='relu',weight_init='random_init',learn_rate=0.01,grad_desc='sgd',beta_1=0.9,beta_2=0.999,epsilon=1e-8,momentum=0.9,rho=0.9):
+    def __init__(self,input_size,hidden_layers,output_size=10,activation='relu',weight_init='random_init',loss_func='cross_entropy',learn_rate=0.01,grad_desc='sgd',beta_1=0.9,beta_2=0.999,epsilon=1e-8,momentum=0.9,rho=0.9):
         self.hidden_layers=hidden_layers
         self.activation=activation
         self.weight_init=weight_init
+        self.loss_func=loss_func
         self.learn_rate=learn_rate
         self.grad_desc=grad_desc
         self.beta_1=beta_1
@@ -37,28 +38,11 @@ class FeedForwardNN:
         self.s_db=[np.zeros_like(b) for b in self.biases]
         self.m_dw=[np.zeros_like(w) for w in self.weights]
         self.m_db=[np.zeros_like(b) for b in self.biases]
-
-    # def relu(self,x):
-    #     return np.maximum(0,x)
-    
-    # def tanh(self,x):
-    #     return np.tanh(x)
-
-    # def relu_derivative(self,x):
-    #     return (x>0).astype(float)
-    
-    # def tanh_derivative(a):
-    #     h = np.tanh(a)
-    #     return 1 - h*h
-
-    # def softmax(self,x):
-    #     x_exp=np.exp(x-np.max(x,axis=1,keepdims=True))
-    #     return x_exp/np.sum(x_exp,axis=1,keepdims=True)
     
     def forward(self,x):
         #forward pass
         self.a=[] # activation function
-        self.z=[] # Linear output
+        self.z=[] # output
 
         current_input=x
         for i in range(len(self.weights)-1):
@@ -73,7 +57,6 @@ class FeedForwardNN:
         self.z.append(z) 
         self.a.append(softmax(z))
 
-        #print(self.a)
         return self.a[-1]
     
     def backward(self,x,y,m):
@@ -81,7 +64,11 @@ class FeedForwardNN:
         self.db=[]
 
         #Error at the output layer
-        dz=self.a[-1] - y 
+        if(self.loss_func=='cross_entropy'):
+           dz=self.a[-1] - y 
+        else:
+           dz=MSE_Grad(y,self.a[-1])
+        
         self.dw.append(np.dot(self.a[-2].T,dz))
         self.db.append(np.sum(dz,axis=0,keepdims=True))
 
@@ -134,24 +121,6 @@ class FeedForwardNN:
                 self.weights[i] -= self.learn_rate * m_dw_hat / (np.sqrt(v_dw_hat) + self.epsilon)
                 self.biases[i] -= self.learn_rate * m_db_hat / (np.sqrt(v_db_hat) + self.epsilon)
 
-        elif self.grad_desc == 'nadam':
-            for i in range(len(self.weights)):
-                m_dw_prev = self.m_dw[i].copy()
-                m_db_prev = self.m_db[i].copy()
-                self.m_dw[i] = self.beta_1 * self.m_dw[i] + (1 - self.beta_1) * self.dw[i]
-                self.m_db[i] = self.beta_1 * self.m_db[i] + (1 - self.beta_1) * self.db[i]
-                self.v_dw[i] = self.beta_2 * self.v_dw[i] + (1 - self.beta_2) * (self.dw[i] ** 2)
-                self.v_db[i] = self.beta_2 * self.v_db[i] + (1 - self.beta_2) * (self.db[i] ** 2)
-
-                m_dw_hat = self.m_dw[i] / (1 - self.beta_1)
-                m_db_hat = self.m_db[i] / (1 - self.beta_1)
-                v_dw_hat = self.v_dw[i] / (1 - self.beta_2)
-                v_db_hat = self.v_db[i] / (1 - self.beta_2)
-
-                # Nesterov correction
-                self.weights[i] -= self.learn_rate * (self.beta_1 * m_dw_prev + (1 - self.beta_1) * self.dw[i]) / (np.sqrt(v_dw_hat) + self.epsilon)
-                self.biases[i] -= self.learn_rate * (self.beta_1 * m_db_prev + (1 - self.beta_1) * self.db[i]) / (np.sqrt(v_db_hat) + self.epsilon)
-
     def train(self, x_train, y_train,batch_size,epochs=10,val_split=0.1):
         no_of_examples=x_train.shape[0]
         val_size=int(no_of_examples*val_split)
@@ -167,32 +136,32 @@ class FeedForwardNN:
                 y_train_batch=y_train[i:end_index]
 
                 if x_train_batch.shape[0] > 0:
-                   # Forward pass on the entire dataset
+                   # Forward pass on the dataset
                    self.forward(x_train_batch)
-                   # Backpropagation on the entire dataset
+                   # Backpropagation on the dataset
                    self.backward(x_train_batch, y_train_batch,x_train_batch.shape[0])
             
-                   # Update parameters after computing gradients for the entire dataset
+                   # Update parameters after computing gradients for the dataset
                    self.update_params()
             
-            # Calculate loss every epoch
+            # Calculate loss after every epoch
             y_pred = self.predict(x_train)
             y_val_pred=self.predict(x_val)
 
-            train_loss=cross_entropy(y_train,y_pred)
+            train_loss=eval(self.loss_func+"(y_train,y_pred)") ##cross_entropy(y_train,y_pred)
+            
             train_accuracy=accuracy_function(y_train,y_pred)   
 
-            #train_loss = -np.mean(np.sum(y_train * np.log(y_pred + 1e-9), axis=1))  # Cross-entropy loss
+
             print(f"Epoch {epoch+1}/{epochs}, Loss: {train_loss},Accuracy :{train_accuracy}")
 
             if x_val is not None and y_val is not None:
-                val_loss=cross_entropy(y_val,y_val_pred)
+                val_loss=eval(self.loss_func+"(y_train,y_pred)")
                 val_accuracy=accuracy_function(y_val,y_val_pred)
                 print(f"Epoch {epoch+1}/{epochs} Validation Loss: {val_loss}, validation Accuracy :{val_accuracy}")
             wandb.log({"val_loss": val_loss,"val_accuracy": val_accuracy,"train_loss": train_loss,"train_accuracy": train_accuracy})
 
     def predict(self, X):
-        # Predict the probability distribution of the class labels
         prob = self.forward(X)
         return prob  # Return the probability distribution over the 10 classes
 
